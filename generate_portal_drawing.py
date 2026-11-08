@@ -200,13 +200,14 @@ def draw_assembly(msp):
                  (22, 70, 500, 150, 560), ("19.1", 230, 375, 260, 470), ("19.3", 281, 430, 330, 470),
                  ("19.2", -220, 375, -240, 440), (10, 228, 395, 245, 520), (11, -230, 395, -275, 470),
                  (20, -150, 405, -200, 450), (13, 330, 405, 340, 520), (29, 0, 330, 120, 345),
-                 (28, -50, 210, -150, 230), (7, -220, 115, -290, 100), (21, -60, 285, -150, 250)]
+                 (28, -50, 210, -150, 230), (7, -220, 115, -290, 100), (21, -60, 285, -150, 250),
+                 (12, 265, 405, 310, 335), (12, 0, 516, -110, 560)]
     for n, x, z, bx, bz in pos_front:
         balloon(msp, n, *F(x, z), *F(bx, bz))
     pos_side = [("16.2", -40, 410, 40, 470), (26, SF - 38, 200, SF - 100, 160), (27, SF - 20, 300, SF - 90, 320),
                 (25, SF - 12, 360, SF - 90, 380), ("16.3", SF - 15, 390, SF - 100, 430),
                 ("19.4", SF - 30, 535, SF - 100, 560), (23, SF - 25, 480, SF - 100, 500),
-                (12, -35, 405, 30, 500), ("16.1", -30, 60, 40, 30), (9, 0, 47, 60, 70), ("K1", 75, 295, 120, 330),
+                ("16.1", -30, 60, 40, 30), (9, 0, 47, 60, 70), ("K1", 75, 295, 120, 330),
                 ("K2", 30, 189, 110, 220)]
     for n, y, z, by, bz in pos_side:
         balloon(msp, n, *L(y, z), *L(by, bz), r=5 if len(str(n)) < 3 else 5.5)
@@ -225,7 +226,7 @@ ASM_BOM = [
     ("14", "Stojka, profil 40x80 paz 8", "L=226", 2, "list 2"),
     ("15", "Scheka, stal", "160x100x6", 4, "list 3"),
     ("16.1", "Kronshtejn gajki Y, svarnoj, stal", "40x60x106", 2, "1 + 1 zerk."),
-    ("16.2", "Kronshtejn gajki X, Al", "60x87x58", 1, "list 3"),
+    ("16.2", "Kronshtejn gajki X, Al (kvadrat 40x40)", "40x83x40", 1, "list 3"),
     ("16.3", "Kronshtejn gajki Z, Al", "100x26x30", 1, "list 3"),
     ("17", "Balka X, truba Al 100x50x5", "L=480", 1, "list 2"),
     ("18", "Rels HGR15 (os X)", "L=480", 2, "pokup., E=30"),
@@ -428,7 +429,7 @@ def sheet2(msp, ox):
     d.rect(0, 0, 200, 292)
     A = [(100 + sx * dx, v) for sx in (-1, 1) for dx in (27, 53) for v in (35, 61, 99, 125)]
     B_ = [(100 + sx * dx, v) for sx in (-1, 1) for dx in (62, 88) for v in (27, 53, 107, 133)]
-    C = [(100 + sx * 18, v) for sx in (-1, 1) for v in (144, 178)]
+    C = [(100 + sx * 12, v) for sx in (-1, 1) for v in (153, 177)]
     D = [(100 + sx * 23, 244.5) for sx in (-1, 1)]
     for u, v in A:
         cbore(d, u, v, 4.5, 8, mark=False)
@@ -450,7 +451,7 @@ def sheet2(msp, ox):
     hole_table(msp, ox + 515, 160, [
         ("A", "D4,5, tsek. D8 gl. 8 speredi", 16, "+-27; +-53", "35; 61; 99; 125"),
         ("B", "D4,5, tsek. D8 gl. 8 SZADI", 16, "+-62; +-88", "27; 53; 107; 133"),
-        ("C", "D6,6, tsek. D11 gl. 6,5 speredi", 4, "+-18", "144; 178"),
+        ("C", "D6,6, tsek. D11 gl. 6,5 speredi", 4, "+-12", "153; 177"),
         ("D", "M5 gl. 12 speredi (BK12 Z)", 2, "+-23", "244,5"),
         ("E", "M5 gl. 12 v verhnem tortse", 3, "0; +-25", "po t. 10"),
     ], "Poz. 22: otverstiya. X - ot osi, Y - ot niza")
@@ -611,31 +612,39 @@ def sheet3(msp, ox):
 
     # ---- поз. 16.2: кронштейн гайки X ----
     d = Det(msp, ox + 640, 440, 1)
-    d.title("Poz. 16.2  Kronshtejn gajki X, Al   1 sht.   M 1:1", dv=80)
-    d.rect(0, 0, 87, 58)
-    d.hole(59, 32, 28.5)
-    for v in (11, 45):
+    d.title("Poz. 16.2  Kronshtejn gajki X, Al (kvadrat 40x40)   1 sht.   M 1:1", dv=62)
+    d.rect(0, 0, 83, 40)
+    d.hole(59, 20, 28.5)
+    for v in (8, 32):
         hbore(d, 0, 12, v, 5)
-    d.hdim(0, 87, 58, 16)
-    d.hdim(0, 59, 58, 8)
-    d.vdim(0, 32, 87, 8)
-    d.vdim(0, 58, 87, 16)
-    d.vdim(0, 11, 0, -8)
-    d.vdim(11, 45, 0, -8)
-    d.leader(59, 32, 6, -40, "D28,5 H8 skvoz; flanets - 4 otv. M5 (K11)")
+    d.hdim(0, 83, 40, 16)
+    d.hdim(0, 59, 40, 8)
+    d.vdim(0, 20, 83, 8)
+    d.vdim(0, 40, 83, 16)
+    d.vdim(0, 8, 0, -8)
+    d.vdim(8, 32, 0, -8)
+    d.leader(59, 20, 6, -34, "D28,5 H8 skvoz; flanets - 4 otv. M5 (K11)")
     text(msp, "vid sboku; sleva - k supportu 22", d.X(0), d.Y(-12), TS)
-    e = Det(msp, ox + 650, 345, 1)
-    e.rect(0, 0, 60, 58)
-    for u in (12, 48):
-        for v in (11, 45):
+    e = Det(msp, ox + 650, 365, 1)
+    e.rect(0, 0, 40, 40)
+    for u in (8, 32):
+        for v in (8, 32):
             e.hole(u, v, 6, thread=True)
-    e.hdim(0, 60, 58, 8)
-    e.hdim(12, 48, 0, -8)
-    e.vdim(32 - 14.25, 32 + 14.25, 60, 8, "D28,5")
-    for v in (32 - 14.25, 32 + 14.25):
-        e.line(0, v, 60, v, "Nevidimye")
-    e.leader(48, 11, 14, -14, "4 otv. M6 gl. 12 (K12)")
+    e.hdim(0, 40, 40, 8)
+    e.hdim(8, 32, 0, -8)
+    e.vdim(20 - 14.25, 20 + 14.25, 40, 8, "D28,5")
+    for v in (20 - 14.25, 20 + 14.25):
+        e.line(0, v, 40, v, "Nevidimye")
+    e.leader(32, 8, 14, -14, "4 otv. M6 gl. 12 (K12)")
     text(msp, "vid na gran k supportu", e.X(0), e.Y(-22), TS)
+    for k_, t_ in enumerate((
+            "Zagotovka: kvadrat Al 40x40 (AD31T1 / D16T), L 86;",
+            "dopuskaetsya paket 4 plit Al 10 (83x40), styanut",
+            "vintami flantsa M5 naskvoz, D28,5 - v sbore.",
+            "Tortsy frezerovat v razmer 83; gran k supportu i",
+            "gran pod flanets - perpendikulyarno osi D28,5 <= 0,05.",
+            "Flanets gajki - lyskami vverh/vniz; M5 - po flantsu.")):
+        text(msp, t_, e.X(60), e.Y(34 - k_ * 5), TS)
 
     # ---- поз. 16.3: кронштейн гайки Z ----
     d = Det(msp, ox + 50, 150, 1)

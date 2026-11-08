@@ -200,7 +200,7 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
         rz = bc + s * X_RAIL_DZ
         a(P(21, "каретка X", "Uzly", "saddle", (tx + dx - CAR_L / 2, tx + dx + CAR_L / 2), (sr, sr + CAR_H - 4), (rz - CAR_W / 2, rz + CAR_W / 2)))
     a(P(22, "суппорт", "Golova", "saddle", (tx - SADDLE_W / 2, tx + SADDLE_W / 2), (sf, sr), (SADDLE_Z0, SADDLE_Z1)))
-    a(P(16, "кронштейн гайки X", "Uzly", "saddle", (tx - 30, tx + 30), (sr, x_axis_y + 28), (top + 3, x_axis_z + 26)))
+    a(P(16, "кронштейн гайки X", "Uzly", "saddle", (tx - 20, tx + 20), (sr, x_axis_y + 24), (x_axis_z - 20, x_axis_z + 20)))
     a(cyl(20, "гайка X", "SHVP", "saddle", "x", x_axis_y, x_axis_z, NUT_R, tx - NUT_L / 2, tx + NUT_L / 2))
     zaxis_y = sf - BKF_CH
     a(P(10, "BK12 Z", "Uzly", "saddle", (tx - 30, tx + 30), (sf - BKF_H, sf), (BK_Z0, BK_Z0 + BK_L)))
@@ -541,7 +541,7 @@ BOM = [
     (13, "Мотор NEMA 23, 76 мм (X, Y×2, Z)", "1,9 Н·м", 4, "3 А"),
     (14, "Стойка, проф. 40×80", f"L={BEAM_Z0 + BEAM_H - (BASE_TOP + STRIP + CAR_H + 15)}", 2, ""),
     (15, "Щека-косынка", "t=6", 4, "сталь"),
-    (16, "Кронштейн гайки (X, Y×2, Z)", "", 4, "Al, фрезер."),
+    (16, "Кронштейн гайки (X, Y×2, Z)", "", 4, "16.1 сталь сварн.; 16.2–16.3 Al"),
     (17, "Балка X, труба 100×50×5", f"L={BEAM_LEN}", 1, "Al 6060"),
     (18, "Рельс HGR15, ось X", f"L={X_RAIL_L}", 2, ""),
     (19, "Плиты BK/BF X и моторов X, Z", "", 4, "19.1-19.4"),
