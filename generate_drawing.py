@@ -46,6 +46,7 @@ BASE_L = 565
 CROSS_D = 40
 BEAM_LEN, BEAM_H, BEAM_D = 480, 100, 50
 BEAM_Z0 = 270
+GANTRY_PLATE_T = 10        # опорная плита портала (поз. 8), сталь 10
 X_RAIL_L = 480
 X_RAIL_DZ = 32              # рельсы X: ±32 от оси балки
 SADDLE_T, SADDLE_W = 20, 200     # ширина 200: каретки Z вне зоны винтов кареток X
@@ -163,10 +164,10 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
     for s in (-1, 1):
         for dy in (-50, 50):
             a(P(7, "каретка Y", "Uzly", "gantry", sorted((s * (RAIL_X - CAR_W / 2), s * (RAIL_X + CAR_W / 2))), (fc + dy - CAR_L / 2, fc + dy + CAR_L / 2), (car_z0, foot_z)))
-        a(P(8, "опорная плита", "Uzly", "gantry", sorted((s * 155, s * 246)), (fc - 80, fc + 80), (foot_z, foot_z + 15)))
-        a(P(14, "стойка", "Rama", "gantry", sorted((s * 200, s * 240)), (fc + UPRIGHT_SHIFT - UPRIGHT_D / 2, fc + UPRIGHT_SHIFT + UPRIGHT_D / 2), (foot_z + 15, BEAM_Z0 + BEAM_H)))
+        a(P(8, "опорная плита", "Uzly", "gantry", sorted((s * 155, s * 246)), (fc - 80, fc + 80), (foot_z, foot_z + GANTRY_PLATE_T)))
+        a(P(14, "стойка", "Rama", "gantry", sorted((s * 200, s * 240)), (fc + UPRIGHT_SHIFT - UPRIGHT_D / 2, fc + UPRIGHT_SHIFT + UPRIGHT_D / 2), (foot_z + GANTRY_PLATE_T, BEAM_Z0 + BEAM_H)))
         for xx in (s * 194, s * 240):
-            a(P(15, "щека", "Uzly", "gantry", sorted((xx, xx + s * 6)), (fc - 80, fc + 80), (foot_z + 15, foot_z + 115)))
+            a(P(15, "щека", "Uzly", "gantry", sorted((xx, xx + s * 6)), (fc - 80, fc + 80), (foot_z + GANTRY_PLATE_T, foot_z + GANTRY_PLATE_T + 100)))
         ax = s * Y_AXIS_X
         # кронштейн 16.1 сварной стальной: стойка 40x20 + полка 60x10; выше верха профиля сужен (край стола)
         by = (fc - 40, fc - 20)
@@ -240,10 +241,10 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
                 a(cyl(41, "винт M8x100", "Krepezh", "gantry", "y", x0, zz, 4, bc_y - 20, bc_y + UPRIGHT_D, True))
                 a(cyl(41, "головка M8", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y + UPRIGHT_D, bc_y + UPRIGHT_D + 8))
             for yy in (bc_y + 20, bc_y + 60):                              # K2: щёки -> стойка
-                for zz in (foot_z + 45, foot_z + 90):
+                for zz in (foot_z + GANTRY_PLATE_T + 30, foot_z + GANTRY_PLATE_T + 75):
                     a(cyl(42, "винт M8x65", "Krepezh", "gantry", "x", yy, zz, 4, s * 188, s * 252, True))
                     a(cyl(42, "головка M8", "Krepezh", "gantry", "x", yy, zz, 6.5, s * 186, s * 194))
-            a(cyl(43, "винт M8x30", "Krepezh", "gantry", "z", x0, bc_y + 20, 4, foot_z, foot_z + 30, True))
+            a(cyl(43, "винт M8x20 DIN 7984", "Krepezh", "gantry", "z", x0, bc_y + 20, 4, foot_z + 4.5, foot_z + 24.5, True))
     return parts
 
 
@@ -533,13 +534,13 @@ BOM = [
     (5, "Полоса посадочная под рельс", "30×6", 4, "шлифовать"),
     (6, "Рельс HGR15, ось Y", f"L={Y_RAIL_L}", 2, ""),
     (7, "Каретка HGH15CA, ось Y", "", 4, "шаг 100"),
-    (8, "Плита опорная gantry", "91×160×15", 2, "сталь"),
+    (8, "Плита опорная gantry", f"91×160×{GANTRY_PLATE_T}", 2, "сталь"),
     (9, "ШВП DFU1605 C7, ось Y", "L≈395", 2, "преднатяг"),
     (10, "Опора BK12 (X, Y×2, Z)", "", 4, ""),
     (11, "Опора BF12 (X, Y×2)", "", 3, ""),
     (12, "Муфта лучевая 6,35×10", "по валу", 4, ""),
     (13, "Мотор NEMA 23, 76 мм (X, Y×2, Z)", "1,9 Н·м", 4, "3 А"),
-    (14, "Стойка, проф. 40×80", f"L={BEAM_Z0 + BEAM_H - (BASE_TOP + STRIP + CAR_H + 15)}", 2, ""),
+    (14, "Стойка, проф. 40×80", f"L={BEAM_Z0 + BEAM_H - (BASE_TOP + STRIP + CAR_H + GANTRY_PLATE_T)}", 2, ""),
     (15, "Щека-косынка", "t=6", 4, "сталь"),
     (16, "Кронштейн гайки (X, Y×2, Z)", "", 4, "16.1 сталь сварн.; 16.2–16.3 Al"),
     (17, "Балка X, труба 100×50×5", f"L={BEAM_LEN}", 1, "Al 6060"),

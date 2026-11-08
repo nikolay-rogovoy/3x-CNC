@@ -217,13 +217,13 @@ def draw_assembly(msp):
 ASM_BOM = [
     ("5.2", "Polosa X, stal 45", "480x30x6", 2, "list 2"),
     ("7", "Karetka HGH15CA (os Y)", "", 4, "pokup."),
-    ("8", "Plita opornaya, stal (svar. s 15)", "91x160x15", 2, "1 + 1 zerk."),
+    ("8", "Plita opornaya, stal (svar. s 15)", "91x160x10", 2, "1 + 1 zerk."),
     ("9", "Gajka SHVP Y DFU1605 (vint - chert. bazy)", "", 2, "pokup."),
     ("10", "Opora BK12 (X, Z)", "", 2, "pokup."),
     ("11", "Opora BF12 (X)", "", 1, "pokup."),
     ("12", "Mufta 6,35x10 (X, Z)", "D25x30", 2, "pokup."),
     ("13", "Motor NEMA 23, 76 mm (X, Z)", "", 2, "pokup."),
-    ("14", "Stojka, profil 40x80 paz 8", "L=226", 2, "list 2"),
+    ("14", "Stojka, profil 40x80 paz 8", "L=231", 2, "list 2"),
     ("15", "Scheka, stal", "160x100x6", 4, "list 3"),
     ("16.1", "Kronshtejn gajki Y, svarnoj, stal", "40x60x106", 2, "1 + 1 zerk."),
     ("16.2", "Kronshtejn gajki X, Al (kvadrat 40x40)", "40x83x40", 1, "list 3"),
@@ -246,8 +246,8 @@ ASM_BOM = [
     ("33", "Planka zakladnaya, stal", "80x30x10", 2, "list 3"),
     ("K1", "Vint M8x100 DIN 912, 8.8", "", 4, "stojka - balka"),
     ("K2", "Vint M8x65 DIN 912 + gajka DIN 985", "", 8, "scheki - stojka"),
-    ("K3", "Vint M8x30 DIN 912", "", 2, "plita 8 - stojka"),
-    ("K4", "Vint M4x12 DIN 912", "", 16, "karetki Y"),
+    ("K3", "Vint M8x20 DIN 7984 (nizk. golovka)", "", 2, "plita 8 - stojka"),
+    ("K4", "Vint M4x10 DIN 912", "", 16, "karetki Y"),
     ("K5", "Vint M4x16 DIN 912", "", 32, "karetki X, Z"),
     ("K6", "Vint M4x16 DIN 912", "", 24, "relsy X, Z"),
     ("K7", "Vint M5x12 DIN 7991", "", 24, "polosy, plity 19"),
@@ -255,9 +255,10 @@ ASM_BOM = [
     ("K9", "Vint M5 DIN 912, dlina po mestu", "", 6, "BK12/BF12"),
     ("K10", "Vint M5x16 / M5x12 DIN 912", "", "4/4", "motory X / Z"),
     ("K11", "Vint M5x16 DIN 912", "", 15, "flantsy gaek"),
-    ("K12", "Vint M6x25 DIN 912", "", 16, "kronshtejny 16"),
+    ("K12", "Vint M6x20 DIN 912", "", 8, "kronshtejny 16.1"),
     ("K13", "Vint M6x35 DIN 912", "", 8, "homuty 28"),
     ("K14", "Vint M8x40 DIN 912", "", 2, "styazhka homutov"),
+    ("K15", "Vint M6x25 DIN 912", "", 8, "kronshtejny 16.2, 16.3"),
 ]
 
 ASM_NOTES = [
@@ -390,37 +391,37 @@ def sheet2(msp, ox):
     # ---- поз. 14: стойка ----
     d = Det(msp, ox + 360, 470, 2)
     d.title("Poz. 14  Stojka, profil 40x80 paz 8   2 sht.   M 1:2", dv=72)
-    d.rect(0, 0, 226, 80)
+    d.rect(0, 0, 231, 80)
     for v in (16, 24, 56, 64):
-        d.line(0, v, 226, v, "Tonkie")
+        d.line(0, v, 231, v, "Tonkie")
     for u in (30, 75):
         for v in CORE:
             d.hole(u, v, 9)
-    for u in (151, 201):
+    for u in (156, 206):
         vbore(d, u, 0, 80, 9)
-    hbore(d, 0, 15, 20, 6.8)
-    d.hdim(0, 226, 80, 24)
+    hbore(d, 0, 18, 20, 6.8)
+    d.hdim(0, 231, 80, 24)
     d.hdim(0, 30, 80, 10)
     d.hdim(30, 75, 80, 10)
-    d.hdim(0, 151, 80, 17)
-    d.hdim(151, 201, 80, 17)
+    d.hdim(0, 156, 80, 17)
+    d.hdim(156, 206, 80, 17)
     d.vdim(0, 20, 0, -8)
     d.vdim(20, 60, 0, -8)
-    d.vdim(0, 80, 226, 8)
+    d.vdim(0, 80, 231, 8)
     d.leader(75, 20, 20, -18, "4 otv. D9 skvoz po X - sverlit po schekam 15")
     text(msp, "vid sboku (gran k scheke); niz - sleva, pered - vnizu", d.X(0), d.Y(-44), TS)
     e = Det(msp, ox + 360, 400, 2)
-    e.rect(0, 0, 226, 40)
-    e.line(0, 16, 226, 16, "Tonkie")
-    e.line(0, 24, 226, 24, "Tonkie")
-    for u in (151, 201):
+    e.rect(0, 0, 231, 40)
+    e.line(0, 16, 231, 16, "Tonkie")
+    e.line(0, 24, 231, 24, "Tonkie")
+    for u in (156, 206):
         e.hole(u, 20, 9)
     for u in (30, 75):
         vbore(e, u, 0, 40, 9)
-    e.vdim(0, 20, 226, 8)
-    e.vdim(0, 40, 226, 16)
-    e.leader(201, 20, 14, -24, "2 otv. D9 skvoz po Y (K1)")
-    e.leader(4, 20, 18, 24, "M8 gl. 15 v perednem serdechnike (K3)")
+    e.vdim(0, 20, 231, 8)
+    e.vdim(0, 40, 231, 16)
+    e.leader(206, 20, 14, -24, "2 otv. D9 skvoz po Y (K1)")
+    e.leader(4, 20, 18, 24, "M8 gl. 18 v perednem serdechnike (K3)")
     text(msp, "vid speredi (gran k balke)", e.X(0), e.Y(-28), TS)
 
     # ---- поз. 22: суппорт ----
@@ -455,7 +456,7 @@ def sheet2(msp, ox):
         ("D", "M5 gl. 12 speredi (BK12 Z)", 2, "+-23", "244,5"),
         ("E", "M5 gl. 12 v verhnem tortse", 3, "0; +-25", "po t. 10"),
     ], "Poz. 22: otverstiya. X - ot osi, Y - ot niza")
-    text(msp, "A - karetki X (K5), B - karetki Z (K5), C - kronshtejn 16.2 (K12)", ox + 515, 124, TS)
+    text(msp, "A - karetki X (K5), B - karetki Z (K5), C - kronshtejn 16.2 (K15)", ox + 515, 124, TS)
 
     # ---- поз. 26: плита Z ----
     d = Det(msp, ox + 630, 280, 2)
@@ -484,7 +485,7 @@ def sheet2(msp, ox):
         ("F", "M6 skvoz (homuty, K13)", 8, "+-50", "22; 58; 132; 168"),
         ("G", "D6,6, tsek. D11 gl. 6,5 speredi", 4, "+-40", "207; 223"),
     ], "Poz. 26: otverstiya. X - ot osi, Y - ot niza")
-    text(msp, "G - kronshtejn 16.3 (K12), s tylnoj storony", ox + 630, 231, TS)
+    text(msp, "G - kronshtejn 16.3 (K15), s tylnoj storony", ox + 630, 231, TS)
 
     notes(msp, ox + 45, 232, [
         "TEHNICHESKIE TREBOVANIYA K DETALYAM (LISTY 2, 3)",
@@ -507,7 +508,7 @@ def sheet2(msp, ox):
 def sheet3(msp, ox):
     # ---- поз. 8: опорная плита ----
     d = Det(msp, ox + 50, 360, 1)
-    d.title("Poz. 8  Plita opornaya, stal 15   1 + 1 zerk.   M 1:1", dv=198)
+    d.title("Poz. 8  Plita opornaya, stal 10   1 + 1 zerk.   M 1:1", dv=198)
     d.rect(0, 0, 91, 160)
     for u, w in ((39, 45), (85, 91)):
         d.rect(u, 0, w, 160, "Tonkie")
@@ -539,15 +540,16 @@ def sheet3(msp, ox):
     d.vdim(0, 28, 91, 8)
     d.vdim(28, 72, 91, 8)
     d.vdim(0, 160, 91, 17)
-    d.leader(78, 143, 22, 12, "8 otv. D4,5, tsek. D8 gl. 7 sverhu (K4)")
-    d.leader(65, 90, 40, 6, "D9, tsek. D14 gl. 9 SNIZU (K3)")
+    d.leader(78, 143, 22, 12, "8 otv. D4,5, tsek. D8 gl. 4,5 sverhu (K4)")
+    d.leader(65, 90, 40, 6, "D9, tsek. D14 gl. 5 SNIZU (K3, DIN 7984)")
     d.leader(28, 72, 30, -10, "4 otv. D6,6 (16.1, K12)")
     text(msp, "vid sverhu, pravaya; pered - vnizu,", d.X(0), d.Y(-18), TS)
     text(msp, "vnutr. kromka - sleva; scheki 15 - tonko", d.X(0), d.Y(-23), TS)
     e = Det(msp, ox + 175, 360, 1)
-    e.rect(0, 0, 15, 160)
-    e.hdim(0, 15, 160, 9)
-    text(msp, "t=15", e.X(0), e.Y(-8), TS)
+    e.rect(0, 0, 10, 160)
+    e.hdim(0, 10, 160, 9)
+    text(msp, "list 10; posle svarki", e.X(0), e.Y(-8), TS)
+    text(msp, "frezerovat niz, t >= 9,5", e.X(0), e.Y(-13), TS)
 
     # ---- поз. 15: щека ----
     d = Det(msp, ox + 225, 430, 1)
@@ -635,7 +637,7 @@ def sheet3(msp, ox):
     e.vdim(20 - 14.25, 20 + 14.25, 40, 8, "D28,5")
     for v in (20 - 14.25, 20 + 14.25):
         e.line(0, v, 40, v, "Nevidimye")
-    e.leader(32, 8, 14, -14, "4 otv. M6 gl. 12 (K12)")
+    e.leader(32, 8, 14, -14, "4 otv. M6 gl. 12 (K15)")
     text(msp, "vid na gran k supportu", e.X(0), e.Y(-22), TS)
     for k_, t_ in enumerate((
             "Zagotovka: kvadrat Al 40x40 (AD31T1 / D16T), L 86;",
@@ -678,7 +680,7 @@ def sheet3(msp, ox):
     e.vdim(0, 7, 100, 8)
     e.vdim(7, 23, 100, 8)
     e.vdim(0, 30, 100, 16)
-    e.leader(90, 23, 16, 14, "4 otv. M6 gl. 12 (K12)")
+    e.leader(90, 23, 16, 14, "4 otv. M6 gl. 12 (K15)")
     text(msp, "vid speredi; 3 otv. M5 sverhu - po flantsu (K11)", e.X(0), e.Y(-10), TS)
 
     # ---- поз. 19.1 ----
