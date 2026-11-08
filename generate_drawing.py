@@ -168,11 +168,11 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
         for xx in (s * 194, s * 240):
             a(P(15, "щека", "Uzly", "gantry", sorted((xx, xx + s * 6)), (fc - 80, fc + 80), (foot_z + 15, foot_z + 115)))
         ax = s * Y_AXIS_X
-        # кронштейн ступенчатый: выше верха профиля сужен, чтобы пройти край стола
+        # кронштейн 16.1 сварной стальной: стойка 40x20 + полка 60x10; выше верха профиля сужен (край стола)
         by = (fc - 40, fc - 20)
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 20, ax + s * 22)), by, (23, BASE_TOP), "", True))
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 22)), by, (BASE_TOP, foot_z - 10), "", True))
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 22)), (fc - 60, fc), (foot_z - 10, foot_z), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 20, ax + s * 20)), by, (23, BASE_TOP), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 20)), by, (BASE_TOP, foot_z - 10), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 20)), (fc - 60, fc), (foot_z - 10, foot_z), "", True))
         a(cyl(9, "гайка Y", "SHVP", "gantry", "y", ax, Y_AXIS_Z, NUT_R, fc - NUT_L / 2, fc + NUT_L / 2, True))
         # фланец гайки D48 с лысками 40 (лыски по X)
         a(P(9, "фланец гайки Y", "SHVP", "gantry", (ax - FLANGE_FLAT, ax + FLANGE_FLAT), (fc - 20, fc - 20 + FLANGE_T), (Y_AXIS_Z - FLANGE_R, Y_AXIS_Z + FLANGE_R), "", True))

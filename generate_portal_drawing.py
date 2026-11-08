@@ -224,7 +224,7 @@ ASM_BOM = [
     ("13", "Motor NEMA 23, 76 mm (X, Z)", "", 2, "pokup."),
     ("14", "Stojka, profil 40x80 paz 8", "L=226", 2, "list 2"),
     ("15", "Scheka, stal", "160x100x6", 4, "list 3"),
-    ("16.1", "Kronshtejn gajki Y, Al", "", 2, "1 + 1 zerk."),
+    ("16.1", "Kronshtejn gajki Y, svarnoj, stal", "40x60x106", 2, "1 + 1 zerk."),
     ("16.2", "Kronshtejn gajki X, Al", "60x87x58", 1, "list 3"),
     ("16.3", "Kronshtejn gajki Z, Al", "100x26x30", 1, "list 3"),
     ("17", "Balka X, truba Al 100x50x5", "L=480", 1, "list 2"),
@@ -264,7 +264,9 @@ ASM_NOTES = [
     "1. Razmery v mm. Polozhenie: instrument v tsentre polya,",
     "   Z vnizu. Spec. v2.2. Baza so stolom - otd. chertezh.",
     "2. Poryadok sborki:",
-    "  a) plitu 8 i scheki 15 svarit (katet 5, s dvuh storon),",
+    "  a) scheki 15 privarit k plite 8: snaruzhi sploshnoj shov,",
+    "     katet 6, kromka s razdelkoj 30x4; vnutri paza - tolko",
+    "     pered stojkoj (0...65 ot pereda), pod stojkoj NE varit;",
     "     zatem frezerovat niz plity (ploskostnost 0,02) i paz",
     "     40 +0,1...+0,3 mezhdu schekami;",
     "  b) plity 8 na karetki Y (K4) - DO ustanovki stoek:",
@@ -494,8 +496,8 @@ def sheet2(msp, ox):
         "   po konduktoru.",
         "4. Profil 14 - kak list 2 bazy: 6060/6063-T6, rezba M8",
         "   metchikom v serdechnike bez rassverlivaniya.",
-        "5. Plita 8 i scheki 15 - St3 / S235; svarnoj uzel",
-        "   obrabatyvat posle svarki (sm. list 1, p. 2a).",
+        "5. Plita 8 + scheki 15, kronshtejn 16.1 - St3 / S235;",
+        "   svarnye uzly obrabatyvat posle svarki (list 1, 2a).",
         "6. Kromki pritupit. Pazy profilya - uslovno.",
     ], step=4.4)
 
@@ -508,6 +510,11 @@ def sheet3(msp, ox):
     d.rect(0, 0, 91, 160)
     for u, w in ((39, 45), (85, 91)):
         d.rect(u, 0, w, 160, "Tonkie")
+    d.rect(45, 70, 85, 150, "Nevidimye")                 # стойка 14
+    for u in (47, 83):                                   # внутренние швы только перед стойкой
+        d.line(u, 0, u, 65, "Tonkie")
+    d.leader(47, 40, -10, -75, "vnutri paza shov - tolko 0...65")
+    text(msp, "stojka", d.X(65), d.Y(110), TS, align="CENTER")
     for u in (52, 78):
         for v in (17, 43, 117, 143):
             cbore(d, u, v, 4.5, 8, mark=False)
@@ -555,36 +562,52 @@ def sheet3(msp, ox):
     d.vdim(30, 75, 160, 8)
     d.vdim(0, 100, 160, 16)
     d.leader(130, 30, 12, -40, "4 otv. D9")
-    text(msp, "niz - k plite 8 (svarka, katet 5);", d.X(0), d.Y(-10), TS)
+    text(msp, "niz - k plite 8: razdelka snaruzhi 30x4, shov katet 6;", d.X(0), d.Y(-10), TS)
     text(msp, "pered - sleva; t = 6", d.X(0), d.Y(-15), TS)
 
-    # ---- поз. 16.1: кронштейн гайки Y ----
+    # ---- поз. 16.1: кронштейн гайки Y, сварной ----
     d = Det(msp, ox + 440, 420, 1)
-    d.title("Poz. 16.1  Kronshtejn gajki Y, Al   1 + 1 zerk.   M 1:1", dv=128)
-    poly(d, [(0, 0), (42, 0), (42, 106), (6, 106), (6, 72), (0, 72)])
-    d.line(6, 96, 42, 96, "Tonkie")
-    d.hole(20, 24, 28.5)
-    d.hdim(0, 42, 106, 9)
+    d.title("Poz. 16.1  Kronshtejn gajki Y, svarnoj, stal   1 + 1 zerk.   M 1:1", dv=128)
+    poly(d, [(0, 0), (40, 0), (40, 106), (6, 106), (6, 72), (0, 72)])
+    d.line(6, 96, 40, 96, "Tonkie")
+    d.hole(20, 24, 29)
+    d.hdim(0, 40, 106, 9)
     d.hdim(0, 6, 106, 16)
     d.hdim(0, 20, 0, -9)
     d.vdim(0, 24, 0, -8)
     d.vdim(0, 72, 0, -16)
-    d.vdim(0, 106, 42, 8)
-    d.vdim(96, 106, 42, 16)
-    d.leader(20, 24, 30, -36, "D28,5 H8 skvoz (gajka DFU1605)")
+    d.vdim(0, 106, 40, 8)
+    d.vdim(96, 106, 40, 16)
+    d.leader(20, 24, 30, -36, "D29 skvoz - posle svarki")
     text(msp, "vid speredi", d.X(0), d.Y(-46), TS)
     e = Det(msp, ox + 520, 420, 1)
     poly(e, [(20, 0), (40, 0), (40, 96), (60, 96), (60, 106), (0, 106), (0, 96), (20, 96)])
+    for u, sg in ((20, -1), (40, 1)):                    # угловые швы катет 5 под полкой
+        tri = [e.P(u, 96), e.P(u + sg * 5, 96), e.P(u, 91)]
+        for a, b in zip(tri, tri[1:] + tri[:1]):
+            line(msp, a, b)
+        h = msp.add_hatch(color=7, dxfattribs={"layer": "Shtrihovka"})
+        h.paths.add_polyline_path(tri, is_closed=True)
     for v in (8, 52):
-        vbore(e, v, 94, 106, 5)
-    hbore(e, 20, 40, 24, 28.5)
+        vbore(e, v, 96, 106, 6)
+    hbore(e, 20, 40, 24, 29)
     e.hdim(0, 60, 106, 9)
     e.hdim(20, 40, 0, -9)
     e.hdim(0, 8, 106, 16)
     e.hdim(8, 52, 106, 16)
+    e.leader(40, 93, 16, 10, "shov 5 s dvuh storon, po 34")
     e.leader(40, 50, 14, -18, "4 otv. M5 po flantsu gajki (K11)")
     text(msp, "vid sboku (pered - sleva)", e.X(0), e.Y(-46), TS)
-    text(msp, "4 otv. M6 gl. 10 sverhu (K12): X 16; 34, Y 8; 52", e.X(-80), e.Y(-52), TS)
+    notes(msp, e.X(-80), e.Y(-53), [
+        "4 otv. M6 skvoz v polke (K12): X 16; 34, Y 8; 52.",
+        "Zagotovki St3: stojka - polosa 40x20, L=96 (stupenka",
+        "6x24 vypilit do svarki); polka - polosa 60x12, L=34.",
+        "Posle svarki frezerovat: verh polki v t=10, ploskostnost",
+        "0,05; zadnyuyu gran (pod flanets) - perpendikulyarno",
+        "verhu 0,05/40, t >= 18; D29 - os perpendikulyarna",
+        "zadnej grani; zatem rezby. Grunt/kraska, krome",
+        "privalochnyh poverhnostej.",
+    ], step=4.4)
 
     # ---- поз. 16.2: кронштейн гайки X ----
     d = Det(msp, ox + 640, 440, 1)
