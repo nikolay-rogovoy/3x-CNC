@@ -204,14 +204,18 @@ def draw_assembly(msp):
                  (12, 265, 405, 310, 335), (12, 0, 516, -110, 560)]
     for n, x, z, bx, bz in pos_front:
         balloon(msp, n, *F(x, z), *F(bx, bz))
-    pos_side = [("16.2", -40, 410, 40, 470), (26, SF - 38, 200, SF - 100, 160), (27, SF - 20, 300, SF - 90, 320),
+    pos_side = [("16.2", -40, 410, 40, 470), (26, SF - 38, 200, SF - 100, 160), (27, SF - 20, 215, SF - 90, 250),
                 (25, SF - 12, 360, SF - 90, 380), ("16.3", SF - 15, 390, SF - 100, 430),
                 ("19.4", SF - 30, 535, SF - 100, 560), (23, SF - 25, 480, SF - 100, 500),
                 ("16.1", -30, 60, 40, 30), (9, 0, 47, 60, 70), ("K1", 75, 295, 120, 330),
                 ("K2", 30, 189, 110, 220)]
     for n, y, z, by, bz in pos_side:
         balloon(msp, n, *L(y, z), *L(by, bz), r=5 if len(str(n)) < 3 else 5.5)
-    balloon(msp, 33, *T(220, -20), *T(270, -70))
+    # 25: вторая линия к нижней каретке Z (кареток две)
+    (bx, by), (tx, ty) = L(SF - 90, 380), L(SF - 12, 280)
+    dd = math.hypot(tx - bx, ty - by)
+    line(msp, (bx + (tx - bx) * 5 / dd, by + (ty - by) * 5 / dd), (tx, ty), "Tekst")
+    msp.add_circle((tx, ty), 0.6, dxfattribs={"layer": "Tekst"})
 
 
 ASM_BOM = [
@@ -241,10 +245,9 @@ ASM_BOM = [
     ("25", "Karetka HGH15CA (os Z)", "", 4, "pokup."),
     ("26", "Plita Z, Al", "180x240x20", 1, "list 2"),
     ("27", "Rels HGR15 (os Z)", "L=220", 2, "pokup., E=20"),
-    ("28", "Homut shpindelya D80, Al", "120x110x60", 2, "list 3"),
+    ("28", "Kolco homuta shpindelya D80, Al 20", "120x110x20", 6, "list 3"),
     ("29", "Shpindel 1,5 kVt ER11, D80", "", 1, "pokup."),
-    ("33", "Planka zakladnaya, stal", "80x30x10", 2, "list 3"),
-    ("K1", "Vint M8x100 DIN 912, 8.8", "", 4, "stojka - balka"),
+    ("K1", "Vint M8x100 DIN 912 + gajka DIN 985 + shajba DIN 9021", "", 4, "stojka - balka"),
     ("K2", "Vint M8x65 DIN 912 + gajka DIN 985", "", 8, "scheki - stojka"),
     ("K3", "Vint M8x20 DIN 7984 (nizk. golovka)", "", 2, "plita 8 - stojka"),
     ("K4", "Vint M4x10 DIN 912", "", 16, "karetki Y"),
@@ -256,8 +259,8 @@ ASM_BOM = [
     ("K10", "Vint M5x16 / M5x12 DIN 912", "", "4/4", "motory X / Z"),
     ("K11", "Vint M5x16 DIN 912", "", 15, "flantsy gaek"),
     ("K12", "Vint M6x20 DIN 912", "", 8, "kronshtejny 16.1"),
-    ("K13", "Vint M6x35 DIN 912", "", 8, "homuty 28"),
-    ("K14", "Vint M8x40 DIN 912", "", 2, "styazhka homutov"),
+    ("K13", "Vint M6x35 DIN 912", "", 12, "homuty 28"),
+    ("K14", "Vint M6x40 DIN 912", "", 6, "styazhka homutov"),
     ("K15", "Vint M6x25 DIN 912", "", 8, "kronshtejny 16.2, 16.3"),
 ]
 
@@ -275,15 +278,15 @@ ASM_NOTES = [
     "     4 vinta iz 8 okazhutsya pod stojkoj;",
     "  c) stojki 14 v paz, K3 snizu; otv. D9 v stojke sverlit",
     "     po schekam, K2 - 25 N*m;",
-    "  d) planki 33 zavesti v trubu s tortsov, balka 17 na",
-    "     stojki (K1): perpendikulyarnost relsam Y <= 0,05",
-    "     na 300 (diagonali portala), K1 - 25 N*m;",
+    "  d) balka 17 na stojki (K1): gajki s shajbami DIN 9021 -",
+    "     vnutri truby, cherez torets (klyuch 13); perpendikulyarnost",
+    "     relsam Y <= 0,05 na 300 (diagonali portala), K1 - 25 N*m;",
     "  e) polosy 5.2 (K7): obschaya ploskost <= 0,02; bazovyj",
     "     rels 18 - po linejke <= 0,01/100, vtoroj parallelno",
     "     <= 0,02 po indikatoru s karetki; M4 - 4 N*m;",
     "  f) support 22: SNACHALA karetki Z (K5 s tyla),",
     "     POTOM karetki X (K5 speredi) - inache ne dostat;",
-    "  g) plita Z 26: relsy 27, homuty 28, kronshtejn 16.3;",
+    "  g) plita Z 26: relsy 27, homuty 28 (po 3 kolca), kronshtejn 16.3;",
     "     rels Z zavesti v karetki Z sverhu;",
     "  h) BK/BF na plity 19, vint X vyverit: parallelnost",
     "     relsam <= 0,05 v dvuh ploskostyah (folga pod plity);",
@@ -463,7 +466,7 @@ def sheet2(msp, ox):
     d.title("Poz. 26  Plita Z, Al 6082-T6 / 5083   1 sht.   M 1:2", dv=146)
     poly(d, [(0, 0), (180, 0), (180, 240), (116, 240), (116, 75), (64, 75), (64, 240), (0, 240)])
     E = [(90 + sx * 75, v) for sx in (-1, 1) for v in (30, 90, 150, 210)]
-    Fh = [(90 + sx * 50, v) for sx in (-1, 1) for v in (22, 58, 132, 168)]
+    Fh = [(90 + sx * 50, v) for sx in (-1, 1) for v in (20, 40, 60, 130, 150, 170)]
     G = [(90 + sx * 40, v) for sx in (-1, 1) for v in (207, 223)]
     for u, v in E:
         d.hole(u, v, 4, thread=True, mark=False)
@@ -472,7 +475,7 @@ def sheet2(msp, ox):
     for u, v in G:
         cbore(d, u, v, 6.6, 11, mark=False)
     d.line(90, -5, 90, 245, "Osevye")
-    for n, (u, v) in (("E", E[3]), ("F", Fh[7]), ("G", G[3])):
+    for n, (u, v) in (("E", E[3]), ("F", Fh[11]), ("G", G[3])):
         text(msp, n, d.X(u) + 2.5, d.Y(v) + 1.5, TS)
     d.hdim(0, 180, 240, 8)
     d.hdim(64, 116, 240, 15)
@@ -482,7 +485,7 @@ def sheet2(msp, ox):
     text(msp, "okno: R3 v uglah", d.X(0), d.Y(-13), TS)
     hole_table(msp, ox + 630, 255, [
         ("E", "M4 skvoz (relsy Z, K6)", 8, "+-75", "30; 90; 150; 210"),
-        ("F", "M6 skvoz (homuty, K13)", 8, "+-50", "22; 58; 132; 168"),
+        ("F", "M6 skvoz (homuty, K13)", 12, "+-50", "20; 40; 60; 130; 150; 170"),
         ("G", "D6,6, tsek. D11 gl. 6,5 speredi", 4, "+-40", "207; 223"),
     ], "Poz. 26: otverstiya. X - ot osi, Y - ot niza")
     text(msp, "G - kronshtejn 16.3 (K15), s tylnoj storony", ox + 630, 231, TS)
@@ -766,21 +769,9 @@ def sheet3(msp, ox):
     text(msp, "D39 H11; 4 otv. M5 (motor)", d.X(0), d.Y(-22), TS)
     text(msp, "tonkaya - gran supporta 22", d.X(0), d.Y(-27), TS)
 
-    # ---- поз. 33: планка ----
-    d = Det(msp, ox + 215, 40, 1)
-    d.title("Poz. 33  Planka zakladnaya, stal 10   2 sht.", dv=96)
-    d.rect(0, 0, 30, 80)
-    for v in (15, 65):
-        d.hole(15, v, 8, thread=True)
-    d.hdim(0, 30, 80, 8)
-    d.vdim(0, 15, 30, 8)
-    d.vdim(15, 65, 30, 8)
-    d.vdim(0, 80, 30, 16)
-    d.leader(15, 65, 24, 8, "2 otv. M8 skvoz (K1)")
-
     # ---- поз. 28: хомут ----
     d = Det(msp, ox + 330, 30, 1)
-    d.title("Poz. 28  Homut shpindelya, Al 6082-T6   2 sht.   M 1:1 (vid sverhu)", dv=132)
+    d.title("Poz. 28  Kolco homuta shpindelya, Al 20 (6082-T6)   6 sht.   M 1:1 (vid sverhu)", dv=132)
     d.rect(0, 0, 120, 110)
     d.hole(60, 55, 80)
     d.line(59, 95, 59, 110)
@@ -788,8 +779,8 @@ def sheet3(msp, ox):
     for u in (10, 110):
         vbore(d, u, 20, 110, 11)
         vbore(d, u, 0, 20, 6.6)
-    hbore(d, 0, 50, 102.5, 13)
-    hbore(d, 61, 85, 102.5, 8)
+    hbore(d, 0, 50, 102.5, 11)
+    hbore(d, 61, 85, 102.5, 6)
     d.hdim(0, 120, 110, 16)
     d.hdim(0, 10, 110, 8)
     d.hdim(110, 120, 110, 8)
@@ -798,9 +789,19 @@ def sheet3(msp, ox):
     d.vdim(0, 110, 120, 24)
     d.vdim(102.5, 110, 0, -8)
     d.leader(60, 15, 46, -20, "D80 H7, razrez 2 do otv.")
-    text(msp, "zad (k plite Z) - vnizu; vysota 60", d.X(0), d.Y(-8), TS)
-    text(msp, "4 otv. D6,6, tsek. D11 do 20 ot zadnej grani, Z 12; 48 (K13)", d.X(0), d.Y(-13), TS)
-    text(msp, "styazhka: D9, tsek. D13 sleva / M8 sprava, Z 30 (K14)", d.X(0), d.Y(-18), TS)
+    text(msp, "zad (k plite Z) - vnizu; tolshchina 20", d.X(0), d.Y(-8), TS)
+    for k_, t_ in enumerate((
+            "Homut = 3 kolca. V kazhdom kolce:",
+            "- razrez 2 do otv. styazhki;",
+            "- 2 otv. D6,6, tsek. D11 do 20 ot zadnej",
+            "  grani (K13);",
+            "- styazhka: D6,6, tsek. D11 sleva /",
+            "  M6 sprava (K14);",
+            "- vse otverstiya - po seredine (Z 10).",
+            "D80 H7 rastachivat v pakete 3 kolec",
+            "odnogo homuta (styanut strubcinoj),",
+            "kolca zamarkirovat.")):
+        text(msp, t_, d.X(150), d.Y(105 - k_ * 5), TS)
 
 
 # ---------------------- вывод ----------------------

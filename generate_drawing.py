@@ -150,7 +150,7 @@ def base_parts(fasteners=False):
 
 def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
     """tx, ty, tz — положение инструмента относительно центра рабочего поля и низа Z.
-    fasteners — крепёж и закладные планки портала (для сборочного чертежа портала)."""
+    fasteners — крепёж портала (для сборочного чертежа портала)."""
     ty = TABLE_Y0 + WORK_Y / 2 if ty is None else ty
     tool_y = ty
     z = Z_LOW + tz
@@ -227,8 +227,9 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
     a(cyl(23, "фланец гайки Z", "SHVP", "head", "z", tx, zaxis_y, FLANGE_R, nut_top - FLANGE_T, nut_top))
     clamp_y = zf - CLAMP_SPACER
     axis_y = clamp_y - CLAMP_WALL - SPINDLE_D / 2
-    for cz in (pz0 + 10, pz0 + 120):
-        a(P(28, "хомут", "Golova", "head", (tx - 60, tx + 60), (axis_y - SPINDLE_D / 2 - CLAMP_WALL, clamp_y), (cz, cz + 60)))
+    for cz in (pz0 + 10, pz0 + 120):              # 2 хомута по 3 кольца Al 20
+        for k in range(3):
+            a(P(28, "хомут", "Golova", "head", (tx - 60, tx + 60), (axis_y - SPINDLE_D / 2 - CLAMP_WALL, clamp_y), (cz + 20 * k, cz + 20 * k + 20)))
     a(cyl(29, "шпиндель", "Golova", "head", "z", tx, axis_y, SPINDLE_D / 2, nose, nose + SPINDLE_L))
     a(cyl(29, "гайка цанги", "Golova", "head", "z", tx, axis_y, 12, nose - 13, nose))
     a(cyl(29, "инструмент", "Golova", "head", "z", tx, axis_y, 2, z, nose - 13))
@@ -236,10 +237,11 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
         bc_y = bf + BEAM_D                       # тыл балки = перед стойки
         for s in (-1, 1):
             x0 = s * 220
-            a(P(33, "планка закладная", "Krepezh", "gantry", sorted((s * 205, s * 235)), (bc_y - 15, bc_y - 5), (BEAM_Z0 + 10, BEAM_Z0 + 90), "", True))
             for zz in (BEAM_Z0 + 25, BEAM_Z0 + 75):                       # K1: стойка -> балка
                 a(cyl(41, "винт M8x100", "Krepezh", "gantry", "y", x0, zz, 4, bc_y - 20, bc_y + UPRIGHT_D, True))
                 a(cyl(41, "головка M8", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y + UPRIGHT_D, bc_y + UPRIGHT_D + 8))
+                a(cyl(41, "шайба DIN 9021", "Krepezh", "gantry", "y", x0, zz, 12, bc_y - 7, bc_y - 5, True))
+                a(cyl(41, "гайка DIN 985", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y - 15, bc_y - 7, True))
             for yy in (bc_y + 20, bc_y + 60):                              # K2: щёки -> стойка
                 for zz in (foot_z + GANTRY_PLATE_T + 30, foot_z + GANTRY_PLATE_T + 75):
                     a(cyl(42, "винт M8x65", "Krepezh", "gantry", "x", yy, zz, 4, s * 188, s * 252, True))
@@ -554,12 +556,11 @@ BOM = [
     (25, "Каретка HGH15CA, ось Z", "", 4, "шаг 80"),
     (26, "Плита Z с окном под гайку", f"{ZPLATE_W}×{ZPLATE_L}×{ZPLATE_T}", 1, "Al"),
     (27, "Рельс HGR15, ось Z", f"L={Z_RAIL_L}", 2, ""),
-    (28, "Хомут шпинделя", "диам. 80", 2, "Al"),
+    (28, "Кольцо хомута шпинделя диам. 80", "120×110×20", 6, "Al 20"),
     (29, "Шпиндель 1,5 кВт, ER11, воздух", "диам. 80", 1, "s VFD 220 V"),
     (30, "Плита угловая передняя", "130×80×6", 2, "сталь"),
     (31, "Плита угловая задняя, моторная", "130×80×6", 2, "сталь"),
     (32, "Плита под BK12/BF12 оси Y", "64×80×6", 4, "сталь, 2+2 зерк."),
-    (33, "Планка закладная в балку X", "80×30×10", 2, "сталь"),
 ]
 
 NOTES = [
