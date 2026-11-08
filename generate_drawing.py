@@ -48,10 +48,10 @@ BEAM_LEN, BEAM_H, BEAM_D = 480, 100, 50
 BEAM_Z0 = 270
 X_RAIL_L = 480
 X_RAIL_DZ = 32              # рельсы X: ±32 от оси балки
-SADDLE_T, SADDLE_W = 20, 160
+SADDLE_T, SADDLE_W = 20, 200     # ширина 200: каретки Z вне зоны винтов кареток X
 SADDLE_Z0, SADDLE_Z1 = 240, 532
-ZPLATE_T, ZPLATE_W, ZPLATE_L = 20, 150, 240
-Z_RAIL_L, Z_RAIL_DX = 220, 55
+ZPLATE_T, ZPLATE_W, ZPLATE_L = 20, 180, 240
+Z_RAIL_L, Z_RAIL_DX = 220, 75   # рельсы Z ±75: винты кареток X не закрыты каретками Z
 CLAMP_SPACER, CLAMP_WALL = 0, 15
 WINDOW_Z0 = 75              # низ окна плиты Z: хвост винта при верхнем положении
 
@@ -147,8 +147,9 @@ def base_parts(fasteners=False):
     return parts
 
 
-def build(tx=0.0, ty=None, tz=0.0):
-    """tx, ty, tz — положение инструмента относительно центра рабочего поля и низа Z."""
+def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
+    """tx, ty, tz — положение инструмента относительно центра рабочего поля и низа Z.
+    fasteners — крепёж и закладные планки портала (для сборочного чертежа портала)."""
     ty = TABLE_Y0 + WORK_Y / 2 if ty is None else ty
     tool_y = ty
     z = Z_LOW + tz
@@ -165,15 +166,16 @@ def build(tx=0.0, ty=None, tz=0.0):
         a(P(8, "опорная плита", "Uzly", "gantry", sorted((s * 155, s * 246)), (fc - 80, fc + 80), (foot_z, foot_z + 15)))
         a(P(14, "стойка", "Rama", "gantry", sorted((s * 200, s * 240)), (fc + UPRIGHT_SHIFT - UPRIGHT_D / 2, fc + UPRIGHT_SHIFT + UPRIGHT_D / 2), (foot_z + 15, BEAM_Z0 + BEAM_H)))
         for xx in (s * 194, s * 240):
-            a(P(15, "щека", "Uzly", "gantry", sorted((xx, xx + 6)), (fc - 80, fc + 80), (foot_z + 15, foot_z + 115)))
+            a(P(15, "щека", "Uzly", "gantry", sorted((xx, xx + s * 6)), (fc - 80, fc + 80), (foot_z + 15, foot_z + 115)))
         ax = s * Y_AXIS_X
         # кронштейн ступенчатый: выше верха профиля сужен, чтобы пройти край стола
-        by = (fc - 10 - FLANGE_T - 10, fc - 10 - FLANGE_T + 10)
+        by = (fc - 40, fc - 20)
         a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 20, ax + s * 22)), by, (23, BASE_TOP), "", True))
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 22)), by, (BASE_TOP, foot_z), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 22)), by, (BASE_TOP, foot_z - 10), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 22)), (fc - 60, fc), (foot_z - 10, foot_z), "", True))
         a(cyl(9, "гайка Y", "SHVP", "gantry", "y", ax, Y_AXIS_Z, NUT_R, fc - NUT_L / 2, fc + NUT_L / 2, True))
         # фланец гайки D48 с лысками 40 (лыски по X)
-        a(P(9, "фланец гайки Y", "SHVP", "gantry", (ax - FLANGE_FLAT, ax + FLANGE_FLAT), (fc - 10 - FLANGE_T, fc - 10), (Y_AXIS_Z - FLANGE_R, Y_AXIS_Z + FLANGE_R), "", True))
+        a(P(9, "фланец гайки Y", "SHVP", "gantry", (ax - FLANGE_FLAT, ax + FLANGE_FLAT), (fc - 20, fc - 20 + FLANGE_T), (Y_AXIS_Z - FLANGE_R, Y_AXIS_Z + FLANGE_R), "", True))
     a(P(17, "балка X", "Rama", "gantry", (-BEAM_LEN / 2, BEAM_LEN / 2), (bf, bf + BEAM_D), (BEAM_Z0, BEAM_Z0 + BEAM_H)))
     bc = BEAM_Z0 + BEAM_H / 2
     for s in (-1, 1):
@@ -183,14 +185,13 @@ def build(tx=0.0, ty=None, tz=0.0):
     x_axis_y = bf + BEAM_D / 2
     top = BEAM_Z0 + BEAM_H
     x_axis_z = top + 10 + BKF_CH
-    a(P(19, "подкладка BK/BF", "Uzly", "gantry", (-240, -220), (x_axis_y - 30, x_axis_y + 30), (top, top + 10)))
-    a(P(19, "подкладка BK/BF", "Uzly", "gantry", (215, 240), (x_axis_y - 30, x_axis_y + 30), (top, top + 10)))
+    a(P(19.2, "плита BF X", "Uzly", "gantry", (-240, -200), (x_axis_y - 30, x_axis_y + 30), (top, top + 10)))
+    a(P(19.1, "плита BK X", "Uzly", "gantry", (195, 276), (x_axis_y - 30, x_axis_y + 30), (top, top + 10)))
     a(P(11, "BF12 X", "Uzly", "gantry", (-240, -220), (x_axis_y - 30, x_axis_y + 30), (top + 10, top + 10 + BKF_H)))
     a(P(10, "BK12 X", "Uzly", "gantry", (215, 240), (x_axis_y - 30, x_axis_y + 30), (top + 10, top + 10 + BKF_H)))
     a(cyl(20, "винт X", "SHVP", "gantry", "x", x_axis_y, x_axis_z, SCREW_R, -250, 270))
     a(cyl(12, "муфта X", "Privod", "gantry", "x", x_axis_y, x_axis_z, 12.5, 250, 280))
-    a(P(19, "кронштейн мотора X", "Uzly", "gantry", (280, 286), (x_axis_y - 30, x_axis_y + 30), (top - 30, x_axis_z + MOTOR / 2)))
-    a(P(19, "кронштейн мотора X", "Uzly", "gantry", (240, 280), (x_axis_y - 30, x_axis_y + 30), (top - 30, top)))
+    a(P(19.3, "плита мотора X", "Uzly", "gantry", (276, 286), (x_axis_y - 30, x_axis_y + 30), (top - 15, top + 70)))
     a(P(13, "мотор X", "Privod", "gantry", (286, 286 + MOTOR_L), (x_axis_y - MOTOR / 2, x_axis_y + MOTOR / 2), (x_axis_z - MOTOR / 2, x_axis_z + MOTOR / 2)))
     # ---------- Суппорт X ----------
     sr = bf - SADDLE_REAR               # тыл суппорта
@@ -199,13 +200,13 @@ def build(tx=0.0, ty=None, tz=0.0):
         rz = bc + s * X_RAIL_DZ
         a(P(21, "каретка X", "Uzly", "saddle", (tx + dx - CAR_L / 2, tx + dx + CAR_L / 2), (sr, sr + CAR_H - 4), (rz - CAR_W / 2, rz + CAR_W / 2)))
     a(P(22, "суппорт", "Golova", "saddle", (tx - SADDLE_W / 2, tx + SADDLE_W / 2), (sf, sr), (SADDLE_Z0, SADDLE_Z1)))
-    a(P(16, "кронштейн гайки X", "Uzly", "saddle", (tx - 30, tx + 30), (sr, x_axis_y + 28), (top + 1, x_axis_z + FLANGE_R + 2)))
+    a(P(16, "кронштейн гайки X", "Uzly", "saddle", (tx - 30, tx + 30), (sr, x_axis_y + 28), (top + 3, x_axis_z + 26)))
     a(cyl(20, "гайка X", "SHVP", "saddle", "x", x_axis_y, x_axis_z, NUT_R, tx - NUT_L / 2, tx + NUT_L / 2))
     zaxis_y = sf - BKF_CH
     a(P(10, "BK12 Z", "Uzly", "saddle", (tx - 30, tx + 30), (sf - BKF_H, sf), (BK_Z0, BK_Z0 + BK_L)))
     a(cyl(23, "винт Z", "SHVP", "saddle", "z", tx, zaxis_y, SCREW_R, Z_LOW + 38 + ZPLATE_L - NUT_L, BK_Z0 + BK_L + 15))
     a(cyl(12, "муфта Z", "Privod", "saddle", "z", tx, zaxis_y, 12.5, BK_Z0 + BK_L + 4, BK_Z0 + BK_L + 34))
-    a(P(19, "кронштейн мотора Z", "Uzly", "saddle", (tx - 35, tx + 35), (sf - 60, sf), (SADDLE_Z1, SADDLE_Z1 + 6)))
+    a(P(19.4, "плита мотора Z", "Uzly", "saddle", (tx - 35, tx + 35), (sf - 60, sf + 20), (SADDLE_Z1, SADDLE_Z1 + 6)))
     a(P(13, "мотор Z", "Privod", "saddle", (tx - MOTOR / 2, tx + MOTOR / 2), (zaxis_y - MOTOR / 2, zaxis_y + MOTOR / 2), (SADDLE_Z1 + 6, SADDLE_Z1 + 6 + MOTOR_L)))
     zc = Z_CAR_C
     for sx, dz in itertools.product((-1, 1), (-40, 40)):
@@ -221,7 +222,8 @@ def build(tx=0.0, ty=None, tz=0.0):
         a(P(27, "рельс Z", "Relsy", "head", (tx + s * Z_RAIL_DX - RAIL_W / 2, tx + s * Z_RAIL_DX + RAIL_W / 2), (zr, zr + RAIL_H), (pz0 + 10, pz0 + 10 + Z_RAIL_L)))
     nut_top = pz0 + ZPLATE_L
     a(cyl(23, "гайка Z", "SHVP", "head", "z", tx, zaxis_y, NUT_R, nut_top - NUT_L, nut_top))
-    a(P(16, "кронштейн гайки Z", "Uzly", "head", (tx - 45, tx + 45), (zf - CLAMP_SPACER, zf), (nut_top - 25, nut_top + 5)))
+    a(P(16, "кронштейн гайки Z", "Uzly", "head", (tx - 50, tx + 50), (zr, sf - 2), (nut_top - 40, nut_top - 10)))
+    a(cyl(23, "фланец гайки Z", "SHVP", "head", "z", tx, zaxis_y, FLANGE_R, nut_top - FLANGE_T, nut_top))
     clamp_y = zf - CLAMP_SPACER
     axis_y = clamp_y - CLAMP_WALL - SPINDLE_D / 2
     for cz in (pz0 + 10, pz0 + 120):
@@ -229,6 +231,19 @@ def build(tx=0.0, ty=None, tz=0.0):
     a(cyl(29, "шпиндель", "Golova", "head", "z", tx, axis_y, SPINDLE_D / 2, nose, nose + SPINDLE_L))
     a(cyl(29, "гайка цанги", "Golova", "head", "z", tx, axis_y, 12, nose - 13, nose))
     a(cyl(29, "инструмент", "Golova", "head", "z", tx, axis_y, 2, z, nose - 13))
+    if fasteners:
+        bc_y = bf + BEAM_D                       # тыл балки = перед стойки
+        for s in (-1, 1):
+            x0 = s * 220
+            a(P(33, "планка закладная", "Krepezh", "gantry", sorted((s * 205, s * 235)), (bc_y - 15, bc_y - 5), (BEAM_Z0 + 10, BEAM_Z0 + 90), "", True))
+            for zz in (BEAM_Z0 + 25, BEAM_Z0 + 75):                       # K1: стойка -> балка
+                a(cyl(41, "винт M8x100", "Krepezh", "gantry", "y", x0, zz, 4, bc_y - 20, bc_y + UPRIGHT_D, True))
+                a(cyl(41, "головка M8", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y + UPRIGHT_D, bc_y + UPRIGHT_D + 8))
+            for yy in (bc_y + 20, bc_y + 60):                              # K2: щёки -> стойка
+                for zz in (foot_z + 45, foot_z + 90):
+                    a(cyl(42, "винт M8x65", "Krepezh", "gantry", "x", yy, zz, 4, s * 188, s * 252, True))
+                    a(cyl(42, "головка M8", "Krepezh", "gantry", "x", yy, zz, 6.5, s * 186, s * 194))
+            a(cyl(43, "винт M8x30", "Krepezh", "gantry", "z", x0, bc_y + 20, 4, foot_z, foot_z + 30, True))
     return parts
 
 
@@ -237,7 +252,7 @@ ALLOWED = [
     ("винт Y", "гайка Y"), ("винт Y", "кронштейн гайки Y"), ("винт Y", "фланец гайки Y"),
     ("рельс Y", "каретка Y"), ("рельс X", "каретка X"), ("рельс Z", "каретка Z"),
     ("винт X", "гайка X"), ("винт X", "кронштейн гайки X"),
-    ("винт Z", "гайка Z"), ("винт Z", "кронштейн гайки Z"),
+    ("винт Z", "гайка Z"), ("винт Z", "кронштейн гайки Z"), ("винт Z", "фланец гайки Z"),
 ]
 
 
@@ -529,7 +544,7 @@ BOM = [
     (16, "Кронштейн гайки (X, Y×2, Z)", "", 4, "Al, фрезер."),
     (17, "Балка X, труба 100×50×5", f"L={BEAM_LEN}", 1, "Al 6060"),
     (18, "Рельс HGR15, ось X", f"L={X_RAIL_L}", 2, ""),
-    (19, "Подкладки и кронштейны моторов", "", 1, "компл."),
+    (19, "Плиты BK/BF X и моторов X, Z", "", 4, "19.1-19.4"),
     (20, "ШВП DFU1605 C7, ось X", "L≈520", 1, "преднатяг"),
     (21, "Каретка HGH15CA, ось X", "", 4, "шаг 80"),
     (22, "Суппорт X", f"{SADDLE_W}×{SADDLE_Z1 - SADDLE_Z0}×{SADDLE_T}", 1, "Al"),
@@ -543,11 +558,12 @@ BOM = [
     (30, "Плита угловая передняя", "130×80×6", 2, "сталь"),
     (31, "Плита угловая задняя, моторная", "130×80×6", 2, "сталь"),
     (32, "Плита под BK12/BF12 оси Y", "64×80×6", 4, "сталь, 2+2 зерк."),
+    (33, "Планка закладная в балку X", "80×30×10", 2, "сталь"),
 ]
 
 NOTES = [
     "ТЕХНИЧЕСКИЕ УКАЗАНИЯ",
-    "1. Чертёж компоновочный, спец. v2.1. Сборка базы и стола - отд. чертёж.",
+    "1. Компоновка, спец. v2.2. Базу со столом и портал - см. отд. чертежи.",
     "2. Положение на чертеже: инструмент в центре поля, Z внизу.",
     "3. Рабочее поле 300×200, ход Z 60 (механич. предел 78).",
     "4. Параллельность рельсов ≤0,03 мм на длину: только по",
@@ -595,7 +611,7 @@ def draw_frame(msp):
                  ((x1 - 30 * SCALE, by), (x1 - 30 * SCALE, by + h / 2))]:
         msp.add_line(a, b, dxfattribs={"layer": "Ramka"})
     text(msp, "Станок фрезерный настольный, 3 оси", bx + 12, by + h * 0.68, TH * 1.25)
-    text(msp, "Компоновка. Поле 300×200, Z 60. Спец. v2.1", bx + 12, by + h * 0.22, TH)
+    text(msp, "Компоновка. Поле 300×200, Z 60. Спец. v2.2", bx + 12, by + h * 0.22, TH)
     text(msp, "Масштаб", x1 - 56 * SCALE, by + h * 0.3, TH * 0.75)
     text(msp, "1:2,5", x1 - 56 * SCALE, by + h * 0.12, TH)
     text(msp, "Лист А1", x1 - 26 * SCALE, by + h * 0.3, TH * 0.75)

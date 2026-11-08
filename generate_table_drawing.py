@@ -687,10 +687,10 @@ def main():
     y = table(msp, 625, 585, [0, 12, 120, 152, 162, 211], ["Poz.", "Naimenovanie", "Razmer", "Kol.", "Primech."],
               ASM_BOM, rh=5.6)
     notes(msp, 625, y - 7, ASM_NOTES, step=4.3)
-    frame(msp, 0, "Baza so stolom. Sborochnyj chertezh", "Spec. v2.1. Detali - list 2", "1:2,5; 1:1", "1 / 2")
+    frame(msp, 0, "Baza so stolom. Sborochnyj chertezh", "Spec. v2.2. Detali - list 2", "1:2,5; 1:1", "1 / 2")
 
     details(msp, SHEET2_DX)
-    frame(msp, SHEET2_DX, "Baza so stolom. Detali", "Spec. v2.1. Sborka - list 1", "1:2; 1:1", "2 / 2")
+    frame(msp, SHEET2_DX, "Baza so stolom. Detali", "Spec. v2.2. Sborka - list 1", "1:2; 1:1", "2 / 2")
 
     auditor = doc.audit()
     if auditor.has_errors:
