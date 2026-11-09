@@ -112,8 +112,9 @@ def draw_assembly(msp):
     for p in cut:
         y0, y1, z0, z1 = p.y[0], p.y[1], p.z[0], p.z[1]
         rect = lambda a, b, c, d_: [S(a, c), S(b, c), S(b, d_), S(a, d_)]
-        if p.pos == 17:                                  # труба: стенки 5
-            inner = rect(y0 + 5, y1 - 5, z0 + 5, z1 - 5)
+        if p.pos == 17:                                  # труба: стенки BEAM_WALL
+            w_ = g.BEAM_WALL
+            inner = rect(y0 + w_, y1 - w_, z0 + w_, z1 - w_)
             for a, b in zip(inner, inner[1:] + inner[:1]):
                 line(msp, a, b)
             hatch_poly(msp, rect(y0, y1, z0, z1), angle=45, scale=0.4)
@@ -219,20 +220,20 @@ def draw_assembly(msp):
 
 
 ASM_BOM = [
-    ("5.2", "Polosa X, stal 45", "480x30x6", 2, "list 2"),
+    ("5.2", "Polosa X, stal 45", "480x30x5,5", 2, "list 2"),
     ("7", "Karetka HGH15CA (os Y)", "", 4, "pokup."),
-    ("8", "Plita opornaya, stal (svar. s 15)", "91x160x10", 2, "1 + 1 zerk."),
+    ("8", "Plita opornaya, stal (svar. s 15)", "91x160x9", 2, "1 + 1 zerk."),
     ("9", "Gajka SHVP Y DFU1605 (vint - chert. bazy)", "", 2, "pokup."),
     ("10", "Opora BK12 (X, Z)", "", 2, "pokup."),
     ("11", "Opora BF12 (X)", "", 1, "pokup."),
     ("12", "Mufta 6,35x10 (X, Z)", "D25x30", 2, "pokup."),
     ("13", "Motor NEMA 23, 76 mm (X, Z)", "", 2, "pokup."),
-    ("14", "Stojka, profil 40x80 paz 8", "L=231", 2, "list 2"),
+    ("14", "Stojka, profil 40x80 paz 8", "L=232,5", 2, "list 2"),
     ("15", "Scheka, stal", "160x100x6", 4, "list 3"),
     ("16.1", "Kronshtejn gajki Y, svarnoj, stal", "40x60x106", 2, "1 + 1 zerk."),
     ("16.2", "Kronshtejn gajki X, Al (kvadrat 40x40)", "40x83x40", 1, "list 3"),
     ("16.3", "Kronshtejn gajki Z, Al", "100x26x30", 1, "list 3"),
-    ("17", "Balka X, truba Al 100x50x5", "L=480", 1, "list 2"),
+    ("17", "Balka X, truba stal 100x50x4", "L=480", 1, "list 2"),
     ("18", "Rels HGR15 (os X)", "L=480", 2, "pokup., E=30"),
     ("19.1", "Plita BK12 X, Al", "81x60x10", 1, "list 3"),
     ("19.2", "Plita BF12 X, Al", "40x60x10", 1, "list 3"),
@@ -240,10 +241,10 @@ ASM_BOM = [
     ("19.4", "Plita motora Z, stal", "70x80x6", 1, "list 3"),
     ("20", "SHVP DFU1605 C7 (os X)", "L~520", 1, "pokup."),
     ("21", "Karetka HGH15CA (os X)", "", 4, "pokup."),
-    ("22", "Support X, Al", "200x292x20", 1, "list 2"),
+    ("22", "Support X, Al lit. 5083", "200x292x20", 1, "list 2"),
     ("23", "SHVP DFU1605 C7 (os Z)", "L~205", 1, "pokup."),
     ("25", "Karetka HGH15CA (os Z)", "", 4, "pokup."),
-    ("26", "Plita Z, Al", "180x240x20", 1, "list 2"),
+    ("26", "Plita Z, Al lit. 5083", "180x240x20", 1, "list 2"),
     ("27", "Rels HGR15 (os Z)", "L=220", 2, "pokup., E=20"),
     ("28", "Kolco homuta shpindelya D80, Al 20", "120x110x20", 6, "list 3"),
     ("29", "Shpindel 1,5 kVt ER11, D80", "", 1, "pokup."),
@@ -253,8 +254,8 @@ ASM_BOM = [
     ("K4", "Vint M4x10 DIN 912", "", 16, "karetki Y"),
     ("K5", "Vint M4x16 DIN 912", "", 32, "karetki X, Z"),
     ("K6", "Vint M4x16 DIN 912", "", 24, "relsy X, Z"),
-    ("K7", "Vint M5x12 DIN 7991", "", 24, "polosy, plity 19"),
-    ("K8", "Vint M5x16 DIN 7991", "", 5, "plity 19.3, 19.4"),
+    ("K7", "Vint M5x12 DIN 7991", "", 18, "polosy 5.2"),
+    ("K8", "Vint M5x16 DIN 7991", "", 11, "plity 19.1 - 19.4"),
     ("K9", "Vint M5 DIN 912, dlina po mestu", "", 6, "BK12/BF12"),
     ("K10", "Vint M5x16 / M5x12 DIN 912", "", "4/4", "motory X / Z"),
     ("K11", "Vint M5x16 DIN 912", "", 15, "flantsy gaek"),
@@ -308,7 +309,7 @@ RAIL_X = [30 + 60 * i for i in range(8)]
 def sheet2(msp, ox):
     # ---- поз. 17: балка X ----
     d = Det(msp, ox + 45, 470, 2)
-    d.title("Poz. 17  Balka X, truba Al 100x50x5 (6060/6063-T6)   1 sht.   M 1:2", dv=88)
+    d.title("Poz. 17  Balka X, truba stal 100x50x4 (GOST 30245, St3sp)   1 sht.   M 1:2", dv=88)
     d.rect(0, 0, 480, 100)
     for v in (18, 82):
         for u in STRIP_X:
@@ -338,17 +339,18 @@ def sheet2(msp, ox):
     d.leader(460, 25, -150, -42, "4 otv. D9 v ZADNEJ stenke (skryto)")
     text(msp, "vid speredi", d.X(0), d.Y(-30), TS)
     # сечение трубы
-    s = Det(msp, ox + 300, 470, 2)
+    s = Det(msp, ox + 310, 470, 2)
     s.rect(0, 0, 50, 100)
-    s.rect(5, 5, 45, 95)
+    w_ = g.BEAM_WALL
+    s.rect(w_, w_, 50 - w_, 100 - w_)
     hatch_poly(msp, [s.P(0, 0), s.P(50, 0), s.P(50, 100), s.P(0, 100)], scale=0.35)
     h = msp.query("HATCH").last
-    h.paths.add_polyline_path([s.P(5, 5), s.P(45, 5), s.P(45, 95), s.P(5, 95)], is_closed=True,
+    h.paths.add_polyline_path([s.P(w_, w_), s.P(50 - w_, w_), s.P(50 - w_, 100 - w_), s.P(w_, 100 - w_)], is_closed=True,
                               flags=ezdxf.const.BOUNDARY_PATH_OUTERMOST)
     s.hdim(0, 50, 100, 8)
     s.vdim(0, 100, 50, 8)
-    s.hdim(0, 5, 0, -7)
-    text(msp, "sechenie", s.X(25), s.Y(-14), TS, align="CENTER")
+    s.hdim(0, w_, 0, -7)
+    text(msp, "sechenie", s.X(30), s.Y(-14), TS, align="CENTER")
     text(msp, "pered - sleva", s.X(0), s.Y(-24), TS)
     # вид сверху
     d = Det(msp, ox + 45, 388, 2)
@@ -388,48 +390,49 @@ def sheet2(msp, ox):
     d.leader(470, 15, 10, -24, "9 otv. D5,5, zenk. D10,4x90 (K7)")
     e = Det(msp, ox + 45, 282, 2)
     e.rect(0, 0, 480, 6)
-    e.vdim(0, 6, 480, 8, "6 -0,02")
-    text(msp, "Shlifovat: ploskostnost 0,01, raznotolschinnost 0,01; obe polosy - v pare", e.X(0), e.Y(-12), TS)
+    e.vdim(0, 6, 480, 8, "5,5 +-0,1")
+    text(msp, "Polosa 30x6, shlifovat v 5,5: ploskostnost 0,01, raznotolschinnost 0,01; obe polosy - v pare", e.X(0), e.Y(-12), TS)
 
     # ---- поз. 14: стойка ----
     d = Det(msp, ox + 360, 470, 2)
     d.title("Poz. 14  Stojka, profil 40x80 paz 8   2 sht.   M 1:2", dv=72)
-    d.rect(0, 0, 231, 80)
+    L14 = 232.5
+    d.rect(0, 0, L14, 80)
     for v in (16, 24, 56, 64):
-        d.line(0, v, 231, v, "Tonkie")
+        d.line(0, v, L14, v, "Tonkie")
     for u in (30, 75):
         for v in CORE:
             d.hole(u, v, 9)
-    for u in (156, 206):
+    for u in (L14 - 75, L14 - 25):
         vbore(d, u, 0, 80, 9)
     hbore(d, 0, 18, 20, 6.8)
-    d.hdim(0, 231, 80, 24)
+    d.hdim(0, L14, 80, 24)
     d.hdim(0, 30, 80, 10)
     d.hdim(30, 75, 80, 10)
-    d.hdim(0, 156, 80, 17)
-    d.hdim(156, 206, 80, 17)
+    d.hdim(L14 - 75, L14 - 25, 80, 17)
+    d.hdim(L14 - 25, L14, 80, 17)
     d.vdim(0, 20, 0, -8)
     d.vdim(20, 60, 0, -8)
-    d.vdim(0, 80, 231, 8)
+    d.vdim(0, 80, L14, 8)
     d.leader(75, 20, 20, -18, "4 otv. D9 skvoz po X - sverlit po schekam 15")
     text(msp, "vid sboku (gran k scheke); niz - sleva, pered - vnizu", d.X(0), d.Y(-44), TS)
     e = Det(msp, ox + 360, 400, 2)
-    e.rect(0, 0, 231, 40)
-    e.line(0, 16, 231, 16, "Tonkie")
-    e.line(0, 24, 231, 24, "Tonkie")
-    for u in (156, 206):
+    e.rect(0, 0, L14, 40)
+    e.line(0, 16, L14, 16, "Tonkie")
+    e.line(0, 24, L14, 24, "Tonkie")
+    for u in (L14 - 75, L14 - 25):
         e.hole(u, 20, 9)
     for u in (30, 75):
         vbore(e, u, 0, 40, 9)
-    e.vdim(0, 20, 231, 8)
-    e.vdim(0, 40, 231, 16)
-    e.leader(206, 20, 14, -24, "2 otv. D9 skvoz po Y (K1)")
+    e.vdim(0, 20, L14, 8)
+    e.vdim(0, 40, L14, 16)
+    e.leader(L14 - 25, 20, 14, -24, "2 otv. D9 skvoz po Y (K1)")
     e.leader(4, 20, 18, 24, "M8 gl. 18 v perednem serdechnike (K3)")
     text(msp, "vid speredi (gran k balke)", e.X(0), e.Y(-28), TS)
 
     # ---- поз. 22: суппорт ----
     d = Det(msp, ox + 400, 32, 2)
-    d.title("Poz. 22  Support X, Al 6082-T6 / 5083   1 sht.   M 1:2", dv=168)
+    d.title("Poz. 22  Support X, Al litaya 5083   1 sht.   M 1:2", dv=168)
     d.rect(0, 0, 200, 292)
     A = [(100 + sx * dx, v) for sx in (-1, 1) for dx in (27, 53) for v in (35, 61, 99, 125)]
     B_ = [(100 + sx * dx, v) for sx in (-1, 1) for dx in (62, 88) for v in (27, 53, 107, 133)]
@@ -463,7 +466,7 @@ def sheet2(msp, ox):
 
     # ---- поз. 26: плита Z ----
     d = Det(msp, ox + 630, 280, 2)
-    d.title("Poz. 26  Plita Z, Al 6082-T6 / 5083   1 sht.   M 1:2", dv=146)
+    d.title("Poz. 26  Plita Z, Al litaya 5083   1 sht.   M 1:2", dv=146)
     poly(d, [(0, 0), (180, 0), (180, 240), (116, 240), (116, 75), (64, 75), (64, 240), (0, 240)])
     E = [(90 + sx * 75, v) for sx in (-1, 1) for v in (30, 90, 150, 210)]
     Fh = [(90 + sx * 50, v) for sx in (-1, 1) for v in (20, 40, 60, 130, 150, 170)]
@@ -494,11 +497,15 @@ def sheet2(msp, ox):
         "TEHNICHESKIE TREBOVANIYA K DETALYAM (LISTY 2, 3)",
         "1. Razmery v mm, D - diametr. Neukazannye predelnye",
         "   otkloneniya +-0,2; koordinaty otverstij +-0,1.",
-        "2. Plity 22, 26: litaya 5083 ili 6082-T6, obe storony",
-        "   frezerovat, ploskostnost 0,02, t = 20 +-0,05.",
-        "3. Truba 17: tortsy podrezat, perpendikulyarnost 0,1;",
+        "2. Plity 22, 26: litaya pretsizionnaya 5083 t = 20 +-0,1",
+        "   (ALCA 5 / ALPLAN), ploskosti ne frezerovat; ploskost-",
+        "   nost po postavke, <= 0,05 na detali. Katanuyu ne brat.",
+        "3. Truba 17: stal 100x50x4, shov truby - na nizhnej",
+        "   stenke; tortsy podrezat, perpendikulyarnost 0,1;",
+        "   grani pod polosy 5.2 i plity 19 - neploskostnost",
+        "   <= 0,1, inache frezerovat ili podlivka epoksidnoj;",
         "   otv. v perednej stenke sverlit po polose 5.2 kak",
-        "   po konduktoru.",
+        "   po konduktoru; grunt/kraska.",
         "4. Profil 14 - kak list 2 bazy: 6060/6063-T6, rezba M8",
         "   metchikom v serdechnike bez rassverlivaniya.",
         "5. Plita 8 + scheki 15, kronshtejn 16.1 - St3 / S235;",
@@ -549,10 +556,10 @@ def sheet3(msp, ox):
     text(msp, "vid sverhu, pravaya; pered - vnizu,", d.X(0), d.Y(-18), TS)
     text(msp, "vnutr. kromka - sleva; scheki 15 - tonko", d.X(0), d.Y(-23), TS)
     e = Det(msp, ox + 175, 360, 1)
-    e.rect(0, 0, 10, 160)
-    e.hdim(0, 10, 160, 9)
+    e.rect(0, 0, 9, 160)
+    e.hdim(0, 9, 160, 9, "9 +-0,1")
     text(msp, "list 10; posle svarki", e.X(0), e.Y(-8), TS)
-    text(msp, "frezerovat niz, t >= 9,5", e.X(0), e.Y(-13), TS)
+    text(msp, "frezerovat niz v t = 9", e.X(0), e.Y(-13), TS)
 
     # ---- поз. 15: щека ----
     d = Det(msp, ox + 225, 430, 1)
@@ -575,44 +582,46 @@ def sheet3(msp, ox):
     d = Det(msp, ox + 440, 420, 1)
     d.title("Poz. 16.1  Kronshtejn gajki Y, svarnoj, stal   1 + 1 zerk.   M 1:1", dv=128)
     poly(d, [(0, 0), (40, 0), (40, 106), (6, 106), (6, 72), (0, 72)])
-    d.line(6, 96, 40, 96, "Tonkie")
-    d.hole(20, 24, 29)
+    d.line(6, 97, 40, 97, "Tonkie")
+    d.hole(20, 24.5, 29)
     d.hdim(0, 40, 106, 9)
     d.hdim(0, 6, 106, 16)
     d.hdim(0, 20, 0, -9)
-    d.vdim(0, 24, 0, -8)
+    d.vdim(24.5, 106, 0, -8)
     d.vdim(0, 72, 0, -16)
     d.vdim(0, 106, 40, 8)
-    d.vdim(96, 106, 40, 16)
-    d.leader(20, 24, 30, -36, "D29 skvoz - posle svarki")
+    d.vdim(97, 106, 40, 16, "9 +-0,1")
+    d.leader(20, 24.5, 30, -36, "D29 skvoz - posle svarki")
     text(msp, "vid speredi", d.X(0), d.Y(-46), TS)
     e = Det(msp, ox + 520, 420, 1)
-    poly(e, [(20, 0), (40, 0), (40, 96), (60, 96), (60, 106), (0, 106), (0, 96), (20, 96)])
-    for u, sg in ((20, -1), (40, 1)):                    # угловые швы катет 5 под полкой
-        tri = [e.P(u, 96), e.P(u + sg * 5, 96), e.P(u, 91)]
+    poly(e, [(20, 0), (39, 0), (39, 97), (60, 97), (60, 106), (0, 106), (0, 97), (20, 97)])
+    for u, sg in ((20, -1), (39, 1)):                    # угловые швы катет 5 под полкой
+        tri = [e.P(u, 97), e.P(u + sg * 5, 97), e.P(u, 92)]
         for a, b in zip(tri, tri[1:] + tri[:1]):
             line(msp, a, b)
         h = msp.add_hatch(color=7, dxfattribs={"layer": "Shtrihovka"})
         h.paths.add_polyline_path(tri, is_closed=True)
     for v in (8, 52):
-        vbore(e, v, 96, 106, 6)
-    hbore(e, 20, 40, 24, 29)
+        vbore(e, v, 97, 106, 6)
+    hbore(e, 20, 39, 24.5, 29)
+    e.line(30, 0, 30, 97, "Tonkie")                    # стык двух пластин стойки
     e.hdim(0, 60, 106, 9)
-    e.hdim(20, 40, 0, -9)
+    e.hdim(20, 39, 0, -9, "19 +-0,1")
     e.hdim(0, 8, 106, 16)
     e.hdim(8, 52, 106, 16)
-    e.leader(40, 93, 16, 10, "shov 5 s dvuh storon, po 34")
-    e.leader(40, 50, 14, -18, "4 otv. M5 po flantsu gajki (K11)")
+    e.leader(39, 94, 16, 10, "shov 5 s dvuh storon, po 34")
+    e.leader(39, 50, 14, -18, "4 otv. M5 po flantsu gajki (K11)")
     text(msp, "vid sboku (pered - sleva)", e.X(0), e.Y(-46), TS)
     notes(msp, e.X(-80), e.Y(-53), [
         "4 otv. M6 skvoz v polke (K12): X 16; 34, Y 8; 52.",
-        "Zagotovki St3: stojka - polosa 40x20, L=96 (stupenka",
-        "6x24 vypilit do svarki); polka - polosa 60x12, L=34.",
-        "Posle svarki frezerovat: verh polki v t=10, ploskostnost",
-        "0,05; zadnyuyu gran (pod flanets) - perpendikulyarno",
-        "verhu 0,05/40, t >= 18; D29 - os perpendikulyarna",
-        "zadnej grani; zatem rezby. Grunt/kraska, krome",
-        "privalochnyh poverhnostej.",
+        "Vse iz lista St3 t=10: stojka - 2 plastiny 40x97",
+        "(stupenka 6x25 vypilit do svarki), svarit paketom",
+        "po dlinnym kromkam; polka - 60x34.",
+        "Posle svarki frezerovat: verh polki v t = 9,",
+        "ploskostnost 0,05; zadnyuyu gran (pod flanets) v",
+        "t = 19, perpendikulyarno verhu 0,05/40; D29 ot",
+        "verha polki, os perpendikulyarna zadnej grani;",
+        "zatem rezby. Grunt/kraska, krome privalochnyh.",
     ], step=4.4)
 
     # ---- поз. 16.2: кронштейн гайки X ----

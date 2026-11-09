@@ -39,14 +39,16 @@ TABLE_Y0 = 20
 FOOT_H = 15                 # регулируемые опоры
 BASE_H = 80
 BASE_TOP = FOOT_H + BASE_H
-STRIP = 6                   # посадочная полоса под рельс
+STRIP = 5.5                 # посадочная полоса под рельс: полоса 6, шлифовать в 5,5
 RAIL_X = 220                # рельсы Y: X = ±220
 Y_RAIL_L, Y_RAIL_Y0 = 400, 130
 BASE_L = 565
 CROSS_D = 40
 BEAM_LEN, BEAM_H, BEAM_D = 480, 100, 50
+BEAM_WALL = 4               # балка X: стальная труба 100x50x4
 BEAM_Z0 = 270
-GANTRY_PLATE_T = 10        # опорная плита портала (поз. 8), сталь 10
+GANTRY_PLATE_T = 9         # опорная плита портала (поз. 8): лист 10, фрезеровать в 9
+NUT_BR_H, NUT_BR_T, NUT_BR_SHELF = 106, 19, 9  # кронштейн 16.1: высота, стойка, полка (после фрезеровки)
 X_RAIL_L = 480
 X_RAIL_DZ = 32              # рельсы X: ±32 от оси балки
 SADDLE_T, SADDLE_W = 20, 200     # ширина 200: каретки Z вне зоны винтов кареток X
@@ -169,11 +171,13 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
         for xx in (s * 194, s * 240):
             a(P(15, "щека", "Uzly", "gantry", sorted((xx, xx + s * 6)), (fc - 80, fc + 80), (foot_z + GANTRY_PLATE_T, foot_z + GANTRY_PLATE_T + 100)))
         ax = s * Y_AXIS_X
-        # кронштейн 16.1 сварной стальной: стойка 40x20 + полка 60x10; выше верха профиля сужен (край стола)
-        by = (fc - 40, fc - 20)
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 20, ax + s * 20)), by, (23, BASE_TOP), "", True))
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 20)), by, (BASE_TOP, foot_z - 10), "", True))
-        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 20)), (fc - 60, fc), (foot_z - 10, foot_z), "", True))
+        # кронштейн 16.1 сварной, всё из листа 10: стойка 2 пластины, задняя грань фрезеруется в 19;
+        # полка фрезеруется в 9; выше верха профиля сужен (край стола)
+        by = (fc - 20 - NUT_BR_T, fc - 20)
+        sh = foot_z - NUT_BR_SHELF
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 20, ax + s * 20)), by, (foot_z - NUT_BR_H, BASE_TOP), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 20)), by, (BASE_TOP, sh), "", True))
+        a(P(16, "кронштейн гайки Y", "Uzly", "gantry", sorted((ax - s * 14, ax + s * 20)), (fc - 60, fc), (sh, foot_z), "", True))
         a(cyl(9, "гайка Y", "SHVP", "gantry", "y", ax, Y_AXIS_Z, NUT_R, fc - NUT_L / 2, fc + NUT_L / 2, True))
         # фланец гайки D48 с лысками 40 (лыски по X)
         a(P(9, "фланец гайки Y", "SHVP", "gantry", (ax - FLANGE_FLAT, ax + FLANGE_FLAT), (fc - 20, fc - 20 + FLANGE_T), (Y_AXIS_Z - FLANGE_R, Y_AXIS_Z + FLANGE_R), "", True))
@@ -240,8 +244,8 @@ def build(tx=0.0, ty=None, tz=0.0, fasteners=False):
             for zz in (BEAM_Z0 + 25, BEAM_Z0 + 75):                       # K1: стойка -> балка
                 a(cyl(41, "винт M8x100", "Krepezh", "gantry", "y", x0, zz, 4, bc_y - 20, bc_y + UPRIGHT_D, True))
                 a(cyl(41, "головка M8", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y + UPRIGHT_D, bc_y + UPRIGHT_D + 8))
-                a(cyl(41, "шайба DIN 9021", "Krepezh", "gantry", "y", x0, zz, 12, bc_y - 7, bc_y - 5, True))
-                a(cyl(41, "гайка DIN 985", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y - 15, bc_y - 7, True))
+                a(cyl(41, "шайба DIN 9021", "Krepezh", "gantry", "y", x0, zz, 12, bc_y - BEAM_WALL - 2, bc_y - BEAM_WALL, True))
+                a(cyl(41, "гайка DIN 985", "Krepezh", "gantry", "y", x0, zz, 6.5, bc_y - BEAM_WALL - 10, bc_y - BEAM_WALL - 2, True))
             for yy in (bc_y + 20, bc_y + 60):                              # K2: щёки -> стойка
                 for zz in (foot_z + GANTRY_PLATE_T + 30, foot_z + GANTRY_PLATE_T + 75):
                     a(cyl(42, "винт M8x65", "Krepezh", "gantry", "x", yy, zz, 4, s * 188, s * 252, True))
@@ -533,7 +537,7 @@ BOM = [
     (2, "Поперечина базы, проф. 40×80", "L=400", 2, "задняя с отв."),
     (3, "Балка стола, проф. 40×80", f"L={BASE_L - 2 * CROSS_D}", 2, ""),
     (4, "Стол: Al 10 + МДФ 19 + жертв. МДФ 8", "300×200", 1, "M6 шаг 50"),
-    (5, "Полоса посадочная под рельс", "30×6", 4, "шлифовать"),
+    (5, "Полоса посадочная под рельс", f"30×{STRIP:g}", 4, "полоса 6, шлифовать"),
     (6, "Рельс HGR15, ось Y", f"L={Y_RAIL_L}", 2, ""),
     (7, "Каретка HGH15CA, ось Y", "", 4, "шаг 100"),
     (8, "Плита опорная gantry", f"91×160×{GANTRY_PLATE_T}", 2, "сталь"),
@@ -542,10 +546,10 @@ BOM = [
     (11, "Опора BF12 (X, Y×2)", "", 3, ""),
     (12, "Муфта лучевая 6,35×10", "по валу", 4, ""),
     (13, "Мотор NEMA 23, 76 мм (X, Y×2, Z)", "1,9 Н·м", 4, "3 А"),
-    (14, "Стойка, проф. 40×80", f"L={BEAM_Z0 + BEAM_H - (BASE_TOP + STRIP + CAR_H + GANTRY_PLATE_T)}", 2, ""),
+    (14, "Стойка, проф. 40×80", f"L={BEAM_Z0 + BEAM_H - (BASE_TOP + STRIP + CAR_H + GANTRY_PLATE_T):g}", 2, ""),
     (15, "Щека-косынка", "t=6", 4, "сталь"),
     (16, "Кронштейн гайки (X, Y×2, Z)", "", 4, "16.1 сталь сварн.; 16.2–16.3 Al"),
-    (17, "Балка X, труба 100×50×5", f"L={BEAM_LEN}", 1, "Al 6060"),
+    (17, "Балка X, труба 100×50×4", f"L={BEAM_LEN}", 1, "сталь Ст3"),
     (18, "Рельс HGR15, ось X", f"L={X_RAIL_L}", 2, ""),
     (19, "Плиты BK/BF X и моторов X, Z", "", 4, "19.1-19.4"),
     (20, "ШВП DFU1605 C7, ось X", "L≈520", 1, "преднатяг"),

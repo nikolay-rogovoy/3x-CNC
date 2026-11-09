@@ -328,10 +328,10 @@ ASM_BOM = [
     ("2.1", "Poperechina perednyaya, profil 40x80", "L=400", 1, "list 2"),
     ("2.2", "Poperechina zadnyaya, profil 40x80", "L=400", 1, "list 2"),
     ("3", "Balka stola, profil 40x80", "L=485", 2, "list 2"),
-    ("4.1", "Plita stola, Al", "300x200x10", 1, "list 2"),
+    ("4.1", "Plita stola, Al lit. 5083", "300x200x10", 1, "list 2"),
     ("4.2", "Osnovanie stola, MDF", "300x200x19", 1, "list 2"),
     ("4.3", "Zhertvennyj sloj, MDF", "300x200x8", 1, "list 2"),
-    ("5", "Polosa posadochnaya, stal", "400x30x6", 2, "list 2"),
+    ("5", "Polosa posadochnaya, stal", "400x30x5,5", 2, "list 2"),
     ("6", "Rels HGR15", "L=400", 2, "pokup., E=20"),
     ("9", "SHVP DFU1605 C7 (spravochno)", "L~400", 2, "pokup."),
     ("10", "Opora BK12", "", 2, "pokup."),
@@ -535,8 +535,8 @@ def details(msp, ox):
     d.leader(390, 15, 22, -26, "8 otv. D5,5, zenk. D10,4x90 (K6)")
     s = Det(msp, ox + 45, 222, 2)
     s.rect(0, 0, 400, 6)
-    s.vdim(0, 6, 400, 8, "6 -0,02")
-    text(msp, "Shlifovat: ploskostnost 0,01, raznotolschinnost 0,01", s.X(0), s.Y(-12), TS)
+    s.vdim(0, 6, 400, 8, "5,5 +-0,1")
+    text(msp, "Polosa 30x6, shlifovat v 5,5: ploskostnost 0,01, raznotolschinnost 0,01", s.X(0), s.Y(-12), TS)
 
     # ---- поз. 30: плита угловая передняя, 1:1 ----
     d = Det(msp, ox + 300, 205, 1)
@@ -612,7 +612,7 @@ def details(msp, ox):
 
     # ---- поз. 4.1: плита стола, 1:2.5 ----
     d = Det(msp, ox + 45, 52, 2.5)
-    d.title("Poz. 4.1  Plita stola, Al 5083 lit. / 6082-T6   1 sht.   M 1:2,5", dv=106)
+    d.title("Poz. 4.1  Plita stola, Al litaya 5083   1 sht.   M 1:2,5", dv=106)
     d.rect(0, 0, 300, 200)
     for i in range(6):
         for j in range(4):
@@ -632,7 +632,7 @@ def details(msp, ox):
     d.vdim(50, 150, 0, -8)
     d.leader(275, 175, 8, 14, "24 otv. M6 skvoz")
     d.leader(274, 50, 30, -12, "4 otv. D6,6, zenk. D13x90 (K8)")
-    text(msp, "t = 10 +-0,05, obe storony frezerovat", d.X(0), d.Y(-38), TS)
+    text(msp, "t = 10 +-0,1 po postavke, ne frezerovat", d.X(0), d.Y(-38), TS)
 
     # ---- поз. 4.2, 4.3: МДФ, 1:2.5 ----
     d = Det(msp, ox + 255, 52, 2.5)
@@ -667,8 +667,8 @@ def details(msp, ox):
         "   bez shlifovki. 32: t = 5,8...6,0, shlif.",
         "   parno. Neploskostnost <= 0,05;",
         "   kromki pritupit.",
-        "4. Plita 4.1: litaya Al 5083 (ne korobitsya)",
-        "   ili 6082-T6; rezba M6 - skvoznaya.",
+        "4. Plita 4.1: litaya pretsizionnaya Al 5083 (ALCA 5 /",
+        "   ALPLAN), ploskosti ne frezerovat; rezba M6 skvoznaya.",
         "5. Pazy profilej - uslovno.",
     ], step=4.4)
 
